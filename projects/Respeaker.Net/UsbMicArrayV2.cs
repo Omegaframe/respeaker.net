@@ -1,12 +1,14 @@
 ﻿using Respeaker.Net.Hardware;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Respeaker.Net
 {
     public class UsbMicArrayV2
     {
-        public PixelRing PixelRing { get; set; }
+        public PixelRing LedRing { get; internal set; }
+        public AlsaAudioOutput AudioOutput { get; internal set; }
+        public AlsaAudioInput AudioInput { get; internal set; }
+        public OnBoardConfiguration Configuration { get; internal set; }
+
+        internal UsbMicArrayV2() { }
     }
 }

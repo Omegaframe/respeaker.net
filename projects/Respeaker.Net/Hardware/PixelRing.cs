@@ -1,6 +1,7 @@
 ﻿using Device.Net;
 using Device.Net.LibUsb;
 using LibUsbDotNet.Main;
+using Respeaker.Net.Exceptions;
 using System;
 using System.Linq;
 
@@ -20,7 +21,7 @@ namespace Respeaker.Net.Hardware
         /// </summary>
         public void Trace()
         {
-            Write(0, new byte[] { 0 });
+            UsbControl.WriteControlTransfer(0, new byte[] { 0 }, _usbDevice);
         }
 
         /// <summary>
@@ -30,10 +31,13 @@ namespace Respeaker.Net.Hardware
         /// <param name="color">Color as 6 Part Hexadecimal Value</param>
         public void Mono(int color)
         {
-            if (color < 0 || color > 0xFFFFFF)
-                throw new ArgumentOutOfRangeException($"The given color value is out of bounds: {color} Allowed Range: 0x000000 - 0xFFFFFF");
+            const int minColor = 0x000000;
+            const int maxColor = 0xFFFFFF;
 
-            Write(0, new byte[] { (byte)((color >> 16) & 0xFF), (byte)((color >> 8) & 0xFF), (byte)(color & 0xFF), 0 });
+            if (color < minColor || color > maxColor)
+                throw new RespeakerArgumentOutOfRangeException($"The given color value is out of bounds: {color} Allowed Range: {minColor:X} - {maxColor:X}");
+
+            UsbControl.WriteControlTransfer(0, HexColorToByteArray(color), _usbDevice);
         }
 
         /// <summary>
@@ -49,7 +53,7 @@ namespace Respeaker.Net.Hardware
         /// </summary>
         public void Listen()
         {
-            Write(2, new byte[] { 0 });
+            UsbControl.WriteControlTransfer(2, new byte[] { 0 }, _usbDevice);
         }
 
         /// <summary>
@@ -57,7 +61,7 @@ namespace Respeaker.Net.Hardware
         /// </summary>
         public void Speak()
         {
-            Write(3, new byte[] { 0 });
+            UsbControl.WriteControlTransfer(3, new byte[] { 0 }, _usbDevice);
         }
 
         /// <summary>
@@ -65,7 +69,7 @@ namespace Respeaker.Net.Hardware
         /// </summary>
         public void Think()
         {
-            Write(4, new byte[] { 0 });
+            UsbControl.WriteControlTransfer(4, new byte[] { 0 }, _usbDevice);
         }
 
         /// <summary>
@@ -73,7 +77,7 @@ namespace Respeaker.Net.Hardware
         /// </summary>
         public void Spin()
         {
-            Write(5, new byte[] { 0 });
+            UsbControl.WriteControlTransfer(5, new byte[] { 0 }, _usbDevice);
         }
 
         /// <summary>
@@ -82,14 +86,18 @@ namespace Respeaker.Net.Hardware
         /// <param name="colors">array of colors to set each in 6 part hexadecimal format. must be exactly 12 (one per led)</param>
         public void Custom(int[] colors)
         {
-            if (colors.Length != 12)
-                throw new ArgumentOutOfRangeException($"provided {colors.Length} custom colors. Expected exactly 12");
+            const int expectedColors = 12;
+            const int minColor = 0x000000;
+            const int maxColor = 0xFFFFFF;
 
-            if (colors.Any(color => color < 0 || color > 0xFFFFFF))
-                throw new ArgumentOutOfRangeException($"One of the color values is out of bounds. Allowed Range: 0x000000 - 0xFFFFFF");
+            if (colors.Length != expectedColors)
+                throw new RespeakerArgumentOutOfRangeException($"provided {colors.Length} custom colors. Expected exactly {expectedColors}");
 
-            var colorData = colors.SelectMany(color => new byte[] { (byte)((color >> 16) & 0xFF), (byte)((color >> 8) & 0xFF), (byte)(color & 0xFF), 0 }).ToArray();
-            Write(6, colorData);
+            if (colors.Any(color => color < minColor || color > maxColor))
+                throw new RespeakerArgumentOutOfRangeException($"One of the color values is out of bounds. Allowed Range: {minColor:X} - {maxColor:X}");
+
+            var colorData = colors.SelectMany(color => HexColorToByteArray(color)).ToArray();
+            UsbControl.WriteControlTransfer(6, colorData, _usbDevice);
         }
 
         /// <summary>
@@ -98,10 +106,13 @@ namespace Respeaker.Net.Hardware
         /// <param name="brightness">brightness with range: 0x00 - 0x1F</param>
         public void SetBrightness(int brightness)
         {
-            if (brightness < 0 || brightness > 0x1F)
-                throw new ArgumentOutOfRangeException($"The given brightness value is out of bounds: {brightness} Allowed Range: 0 - 0x1F");
+            const int minBrightness = 0;
+            const int maxBrightness = 0x1F;
 
-            Write(0x20, new byte[] { (byte)brightness });
+            if (brightness < 0 || brightness > 0x1F)
+                throw new RespeakerArgumentOutOfRangeException($"The given brightness value is out of bounds: {brightness} Allowed Range: {minBrightness:X} - {maxBrightness:X}");
+
+            UsbControl.WriteControlTransfer(0x20, new byte[] { (byte)brightness }, _usbDevice);
         }
 
         /// <summary>
@@ -111,13 +122,16 @@ namespace Respeaker.Net.Hardware
         /// <param name="b">end color in 6 part heyadecimal format(0x00FF00)</param>
         public void SetColorPalette(int a, int b)
         {
-            if (a < 0 || a > 0xFFFFFF)
-                throw new ArgumentOutOfRangeException($"The given color value for palette a is out of bounds: {a} Allowed Range: 0x000000 - 0xFFFFFF");
+            const int minColor = 0x000000;
+            const int maxColor = 0xFFFFFF;
 
-            if (b < 0 || b > 0xFFFFFF)
-                throw new ArgumentOutOfRangeException($"The given color value for plaette b is out of bounds: {b} Allowed Range: 0x000000 - 0xFFFFFF");
+            if (a < minColor || a > maxColor)
+                throw new RespeakerArgumentOutOfRangeException($"The given color value for palette a is out of bounds: {a} Allowed Range: {minColor:X} - {maxColor:X}");
 
-            Write(0x21, new byte[] { (byte)((a >> 16) & 0xFF), (byte)((a >> 8) & 0xFF), (byte)(a & 0xFF), 0, (byte)((b >> 16) & 0xFF), (byte)((b >> 8) & 0xFF), (byte)(b & 0xFF), 0 });
+            if (b < minColor || b > maxColor)
+                throw new RespeakerArgumentOutOfRangeException($"The given color value for plaette b is out of bounds: {b} Allowed Range: {minColor:X} - {maxColor:X}");
+
+            UsbControl.WriteControlTransfer(0x21, HexColorToByteArray(a).Concat(HexColorToByteArray(b)).ToArray(), _usbDevice);
         }
 
         /// <summary>
@@ -126,7 +140,7 @@ namespace Respeaker.Net.Hardware
         /// <param name="state">on, off or depend on VAD</param>
         public void SetVadLed(VadLedState state)
         {
-            Write(0x22, new byte[] { (byte)state });
+            UsbControl.WriteControlTransfer(0x22, new byte[] { (byte)state }, _usbDevice);
         }
 
         /// <summary>
@@ -135,10 +149,13 @@ namespace Respeaker.Net.Hardware
         /// <param name="volume">volume in range 0 - 12</param>
         public void Volume(int volume)
         {
-            if (volume < 0 || volume > 0x1F)
-                throw new ArgumentOutOfRangeException($"The given volume value is out of bounds: {volume} Allowed Range: 0 - 12");
+            const int minVolume = 0;
+            const int maxVolume = 0x1F;
 
-            Write(0x23, new byte[] { (byte)volume });
+            if (volume < minVolume || volume > maxVolume)
+                throw new RespeakerArgumentOutOfRangeException($"The given volume value is out of bounds: {volume} Allowed Range: {minVolume} - {maxVolume}");
+
+            UsbControl.WriteControlTransfer(0x23, new byte[] { (byte)volume }, _usbDevice);
         }
 
         public void Dispose()
@@ -146,16 +163,15 @@ namespace Respeaker.Net.Hardware
             _usbDevice?.Dispose();
         }
 
-        void Write(int command, byte[] data)
+        static byte[] HexColorToByteArray(int color)
         {
-            var setupPacket = new UsbSetupPacket(
-                CTRL_OUT | CTRL_TYPE_VENDOR | CTRL_RECIPIENT_DEVICE,
-                0,
-                command,
-                0x1C,
-                data.Length);
-
-            _usbDevice.UsbDevice.ControlTransfer(ref setupPacket, data, data.Length, out _);
+            return new byte[] 
+            { 
+                (byte)((color >> 16) & 0xFF), 
+                (byte)((color >> 8) & 0xFF), 
+                (byte)(color & 0xFF), 
+                0
+            };
         }
 
         internal static FilterDeviceDefinition UsbDefinition => new FilterDeviceDefinition
@@ -164,11 +180,7 @@ namespace Respeaker.Net.Hardware
             Label = "Pixel Ring",
             VendorId = 0x2886,
             ProductId = 0x0018
-        };
-
-        const byte CTRL_OUT = 0x00;
-        const byte CTRL_TYPE_VENDOR = 2 << 5;
-        const byte CTRL_RECIPIENT_DEVICE = 0;
+        };       
     }
 
     public enum VadLedState

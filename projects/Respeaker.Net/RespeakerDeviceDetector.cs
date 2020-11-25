@@ -1,5 +1,6 @@
 ﻿using Device.Net;
 using Device.Net.LibUsb;
+using Iot.Device.Media;
 using Respeaker.Net.Hardware;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +8,17 @@ using System.Threading.Tasks;
 
 namespace Respeaker.Net
 {
-    public static class DeviceDetector
+    public static class RespeakerDeviceDetector
     {
-        static DeviceDetector()
+        static RespeakerDeviceDetector()
         {
             LibUsbUsbDeviceFactory.Register(new DebugLogger(), new DebugTracer());
         }
 
         public static async Task<UsbMicArrayV2> GetUsbMicArrayV2()
         {
+            const string alsaDeviceName = "ArrayUAC10";
+
             var deviceDefinitions = new List<FilterDeviceDefinition>()
             {
                PixelRing.UsbDefinition
@@ -26,9 +29,21 @@ namespace Respeaker.Net
             var ringUsbDevice = devices.FirstOrDefault() as LibUsbDevice;
             await ringUsbDevice.InitializeAsync();
 
+            var alsaSettings = new SoundConnectionSettings
+            {
+                RecordingDeviceName = alsaDeviceName,
+                PlaybackDeviceName = alsaDeviceName,
+                RecordingBitsPerSample = 16,
+                RecordingSampleRate = 441000
+            };
+            var alsaDevice = SoundDevice.Create(alsaSettings);
+
             return new UsbMicArrayV2
             {
-                PixelRing = new PixelRing(ringUsbDevice)
+                LedRing = new PixelRing(ringUsbDevice),
+                AudioInput = new AlsaAudioInput(alsaDevice),
+                AudioOutput = new AlsaAudioOutput(alsaDevice),
+                Configuration = new OnBoardConfiguration()
             };
         }
     }
