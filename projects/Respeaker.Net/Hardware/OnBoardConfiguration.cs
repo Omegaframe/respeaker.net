@@ -4,21 +4,20 @@ using System;
 
 namespace Respeaker.Net.Hardware
 {
-    // todo: defaults checken
     public class OnBoardConfiguration
     {
         public int AECFREEZEONOFF { get => Read<int>(18, 7, 1); set => Write(18, 7, 1, 1, 0, value, nameof(AECFREEZEONOFF)); }
         public float AECNORM { get => Read<float>(18, 19, 0); set => Write(18, 19, 0, 16, 0.25, value, nameof(AECNORM)); }
         public int AECPATHCHANGE { get => Read<int>(18, 25, 1); }
-        public float AECSILENCELEVEL { get => Read<float>(18, 30, 1); set => Write(18, 30, 1, 1, 1e-09, value, nameof(AECNORM)); }
+        public float AECSILENCELEVEL { get => Read<float>(18, 30, 1); set => Write(18, 30, 0, 1, 1e-09, value, nameof(AECSILENCELEVEL)); }
         public int AECSILENCEMODE { get => Read<int>(18, 31, 1); }
-        public float AGCDESIREDLEVEL { get; set; }
-        public float AGCGAIN { get; set; }
-        public float AGCMAXGAIN { get; set; }
-        public int AGCONOFF { get; set; }
-        public float AGCTIME { get; set; }
-        public int CNIONOFF { get; set; }
-        public int DOAANGLE { get; }
+        public float AGCDESIREDLEVEL { get => Read<float>(19, 2, 0); set => Write(19, 2, 0, 0.99, 1e-08, value, nameof(AGCDESIREDLEVEL)); }
+        public float AGCGAIN { get => Read<float>(19, 3, 0); set => Write(19, 3, 0, 1000, 1, value, nameof(AGCGAIN)); }
+        public float AGCMAXGAIN { get => Read<float>(19, 1, 0); set => Write(19, 1, 0, 1000, 1, value, nameof(AGCMAXGAIN)); }
+        public int AGCONOFF { get => Read<int>(19, 0, 1); set => Write(19, 0, 1, 1, 0, value, nameof(AGCONOFF)); }
+        public float AGCTIME { get => Read<float>(19, 4, 0); set => Write(19, 4, 0, 1, 0.1, value, nameof(AGCTIME)); }
+        public int CNIONOFF { get => Read<int>(19, 5, 1); set => Write(19, 5, 1, 1, 0, value, nameof(CNIONOFF)); }
+        public int DOAANGLE { get => Read<int>(21, 0, 1); }
         public int ECHOONOFF { get; set; }
         public int FREEZEONOFF { get; set; }
         public int FSBPATHCHANGE { get; }
@@ -58,7 +57,7 @@ namespace Respeaker.Net.Hardware
         void Write<T>(int id, int offset, int type, T max, T min, T value, string parameter) where T : IComparable
         {
             if (value.CompareTo(min) < 0 || value.CompareTo(max) > 0)
-                throw new RespeakerArgumentOutOfRangeException(ExceptionMessages.HardwareExceptionMessages.ParameterOutOfRange.Replace("{VALUE}", value.ToString()).Replace("{MIN}", min.ToString()).Replace("{MAX}", max.ToString()).Replace("{NAME}", parameter));
+                throw new RespeakerArgumentOutOfRangeException(ExceptionMessages.ParameterOutOfRange.Replace("{VALUE}", value.ToString()).Replace("{MIN}", min.ToString()).Replace("{MAX}", max.ToString()).Replace("{NAME}", parameter));
 
             var data = new byte[]
             {

@@ -171,15 +171,7 @@ namespace Respeaker.Net.Hardware
                 (byte)(color & 0xFF), 
                 0
             };
-        }
-
-        internal static FilterDeviceDefinition UsbDefinition => new FilterDeviceDefinition
-        {
-            DeviceType = DeviceType.Usb,
-            Label = "Pixel Ring",
-            VendorId = 0x2886,
-            ProductId = 0x0018
-        };       
+        }        
     }
 
     public enum VadLedState

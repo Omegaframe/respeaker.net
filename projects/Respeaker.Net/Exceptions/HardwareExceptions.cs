@@ -9,7 +9,7 @@ namespace Respeaker.Net.Exceptions
 
         public UsbControlTransferFailedException(byte request, int command, byte[] data, Exception originalException)
         {
-            _message = ExceptionMessages.HardwareExceptionMessages.ControlTransferFailed
+            _message = ExceptionMessages.ControlTransferFailed
                  .Replace("{REQUEST}", request.ToString("X"))
                  .Replace("{COMMAND}", command.ToString("X"))
                  .Replace("{PAYLOAD}", Convert.ToBase64String(data))

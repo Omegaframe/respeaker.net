@@ -21,13 +21,19 @@ namespace Respeaker.Net
 
             var deviceDefinitions = new List<FilterDeviceDefinition>()
             {
-               PixelRing.UsbDefinition
+                new FilterDeviceDefinition
+                {
+                    DeviceType = DeviceType.Usb,
+                    Label = "UsbMicArrayV2",
+                    VendorId = 0x2886,
+                    ProductId = 0x0018
+                }
             };
 
             var devices = await DeviceManager.Current.GetDevicesAsync(deviceDefinitions);
 
-            var ringUsbDevice = devices.FirstOrDefault() as LibUsbDevice;
-            await ringUsbDevice.InitializeAsync();
+            var usbMicArrayV2Device = devices.FirstOrDefault() as LibUsbDevice;
+            await usbMicArrayV2Device.InitializeAsync();
 
             var alsaSettings = new SoundConnectionSettings
             {
@@ -40,10 +46,10 @@ namespace Respeaker.Net
 
             return new UsbMicArrayV2
             {
-                LedRing = new PixelRing(ringUsbDevice),
+                LedRing = new PixelRing(usbMicArrayV2Device),
                 AudioInput = new AlsaAudioInput(alsaDevice),
                 AudioOutput = new AlsaAudioOutput(alsaDevice),
-                Configuration = new OnBoardConfiguration()
+                Configuration = new OnBoardConfiguration(usbMicArrayV2Device)
             };
         }
     }
