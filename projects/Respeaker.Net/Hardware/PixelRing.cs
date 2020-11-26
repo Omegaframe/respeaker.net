@@ -1,6 +1,5 @@
 ﻿using Device.Net;
 using Device.Net.LibUsb;
-using LibUsbDotNet.Main;
 using Respeaker.Net.Exceptions;
 using System;
 using System.Linq;
