@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\alsa.net\src\Alsa\Alsa.csproj">
+    <ProjectReference Include="..\..\..\alsa.net\projects\Alsa.Net\Alsa.Net.csproj" >
       <PrivateAssets>True</PrivateAssets>
     </ProjectReference>
   </ItemGroup>

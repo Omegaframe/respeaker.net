@@ -1,4 +1,4 @@
-﻿using Iot.Device.Media;
+﻿using Alsa.Net;
 using System;
 using System.IO;
 
@@ -6,9 +6,9 @@ namespace Respeaker.Net.Hardware
 {
     public class AlsaAudioOutput : IDisposable
     {
-        readonly SoundDevice _soundDevice;
+        readonly ISoundDevice _soundDevice;
 
-        public AlsaAudioOutput(SoundDevice soundDevice)
+        public AlsaAudioOutput(ISoundDevice soundDevice)
         {
             _soundDevice = soundDevice;
         }        

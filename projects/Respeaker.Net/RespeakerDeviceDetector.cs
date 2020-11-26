@@ -1,6 +1,6 @@
-﻿using Device.Net;
+﻿using Alsa.Net;
+using Device.Net;
 using Device.Net.LibUsb;
-using Iot.Device.Media;
 using Respeaker.Net.Hardware;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Respeaker.Net
                 RecordingBitsPerSample = 16,
                 RecordingSampleRate = 441000
             };
-            var alsaDevice = SoundDevice.Create(alsaSettings);
+            var alsaDevice = AlsaDeviceBuilder.Create(alsaSettings);
 
             return new UsbMicArrayV2
             {

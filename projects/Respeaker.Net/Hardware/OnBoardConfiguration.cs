@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Respeaker.Net.Hardware
+﻿namespace Respeaker.Net.Hardware
 {
+    // todo: defaults checken
     public class OnBoardConfiguration
     {
     }

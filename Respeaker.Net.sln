@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Respeaker.Net", "projects\R
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{2546423C-7CFE-486B-A2E5-BB9A68B900F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alsa", "..\alsa.net\src\Alsa\Alsa.csproj", "{2EEDAB90-DF0E-448B-8491-86621E3240D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alsa.Net", "..\alsa.net\projects\Alsa.Net\Alsa.Net.csproj", "{9737DE60-C61A-416A-8B6B-FAF3441DF925}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,16 +19,16 @@ Global
 		{B25791FD-D3E7-40AF-8D67-F5F902AD9BFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B25791FD-D3E7-40AF-8D67-F5F902AD9BFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B25791FD-D3E7-40AF-8D67-F5F902AD9BFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2EEDAB90-DF0E-448B-8491-86621E3240D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2EEDAB90-DF0E-448B-8491-86621E3240D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2EEDAB90-DF0E-448B-8491-86621E3240D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2EEDAB90-DF0E-448B-8491-86621E3240D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9737DE60-C61A-416A-8B6B-FAF3441DF925}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9737DE60-C61A-416A-8B6B-FAF3441DF925}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9737DE60-C61A-416A-8B6B-FAF3441DF925}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9737DE60-C61A-416A-8B6B-FAF3441DF925}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{2EEDAB90-DF0E-448B-8491-86621E3240D4} = {2546423C-7CFE-486B-A2E5-BB9A68B900F0}
+		{9737DE60-C61A-416A-8B6B-FAF3441DF925} = {2546423C-7CFE-486B-A2E5-BB9A68B900F0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9DFE54CA-DB63-4D16-BD74-5D39DEA81A9E}
