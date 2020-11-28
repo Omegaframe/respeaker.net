@@ -35,6 +35,7 @@ namespace Respeaker.Net.Hardware
 
         public static byte[] ReadControlTransfer(int command, int index, LibUsbDevice usbDevice)
         {
+            // todo: das hier zum laufen bringen
             const byte request = CTRL_IN | CTRL_TYPE_VENDOR | CTRL_RECIPIENT_DEVICE;
 
             var setupPacket = new UsbSetupPacket(

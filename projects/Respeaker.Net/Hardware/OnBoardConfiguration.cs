@@ -1,6 +1,7 @@
 ﻿using Device.Net.LibUsb;
 using Respeaker.Net.Exceptions;
 using System;
+using System.Linq;
 
 namespace Respeaker.Net.Hardware
 {
@@ -72,12 +73,20 @@ namespace Respeaker.Net.Hardware
         T Read<T>(int id, int offset, int type) where T : IComparable
         {
             var cmd = 0x80 | offset;
-            if (type == 0)
+            if (type == 1)
                 cmd |= 0x40;
 
             var response = UsbControl.ReadControlTransfer(id, cmd, _usbDevice);
+            var i1 = BitConverter.ToInt32(response.Take(4).ToArray(), 0);
+            var i2 = BitConverter.ToInt32(response.Skip(4).ToArray(), 0);
 
-            return (T)Convert.ChangeType(response, typeof(T));
+            T result;
+            if (type == 1)
+                result = (T)Convert.ChangeType(i1, typeof(T));
+            else
+                result = (T)Convert.ChangeType((float)i1 * (2 ^ i2), typeof(T));
+
+            return result;
         }
 
         public override string ToString()
