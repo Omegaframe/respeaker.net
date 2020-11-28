@@ -1,8 +1,9 @@
-﻿using Respeaker.Net.Hardware;
+﻿using System;
+using Respeaker.Net.Hardware;
 
 namespace Respeaker.Net
 {
-    public class UsbMicArrayV2
+    public class UsbMicArrayV2 : IDisposable
     {
         public PixelRing LedRing { get; internal set; }
         public AlsaAudioOutput AudioOutput { get; internal set; }
@@ -10,5 +11,13 @@ namespace Respeaker.Net
         public OnBoardConfiguration Configuration { get; internal set; }
 
         internal UsbMicArrayV2() { }
+
+        public void Dispose()
+        {
+            LedRing?.Dispose();
+            AudioOutput?.Dispose();
+            AudioInput?.Dispose();
+            Configuration?.Dispose();
+        }
     }
 }

@@ -4,7 +4,7 @@ using System;
 
 namespace Respeaker.Net.Hardware
 {
-    public class OnBoardConfiguration
+    public class OnBoardConfiguration : IDisposable
     {
         public int AECFREEZEONOFF { get => Read<int>(18, 7, 1); set => Write(18, 7, 1, 1, 0, value, nameof(AECFREEZEONOFF)); }
         public float AECNORM { get => Read<float>(18, 19, 0); set => Write(18, 19, 0, 16, 0.25, value, nameof(AECNORM)); }
@@ -78,6 +78,55 @@ namespace Respeaker.Net.Hardware
             var response = UsbControl.ReadControlTransfer(id, cmd, _usbDevice);
 
             return (T)Convert.ChangeType(response, typeof(T));
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(AECFREEZEONOFF)}: {AECFREEZEONOFF}\n" +
+                   $"{nameof(AECNORM)}: {AECNORM}\n" +
+                   $"{nameof(AECPATHCHANGE)}: {AECPATHCHANGE}\n" +
+                   $"{nameof(AECSILENCELEVEL)}: {AECSILENCELEVEL}\n" +
+                   $"{nameof(AECSILENCEMODE)}: {AECSILENCEMODE}\n" +
+                   $"{nameof(AGCDESIREDLEVEL)}: {AGCDESIREDLEVEL}\n" +
+                   $"{nameof(AGCGAIN)}: {AGCGAIN}\n" +
+                   $"{nameof(AGCMAXGAIN)}: {AGCMAXGAIN}\n" +
+                   $"{nameof(AGCONOFF)}: {AGCONOFF}\n" +
+                   $"{nameof(AGCTIME)}: {AGCTIME}\n" +
+                   $"{nameof(CNIONOFF)}: {CNIONOFF}\n" +
+                   $"{nameof(DOAANGLE)}: {DOAANGLE}\n" +
+                   $"{nameof(ECHOONOFF)}: {ECHOONOFF}\n" +
+                   $"{nameof(FREEZEONOFF)}: {FREEZEONOFF}\n" +
+                   $"{nameof(FSBPATHCHANGE)}: {FSBPATHCHANGE}\n" +
+                   $"{nameof(FSBUPDATED)}: {FSBUPDATED}\n" +
+                   $"{nameof(GAMMAVAD_SR)}: {GAMMAVAD_SR}\n" +
+                   $"{nameof(GAMMA_E)}: {GAMMA_E}\n" +
+                   $"{nameof(GAMMA_ENL)}: {GAMMA_ENL}\n" +
+                   $"{nameof(GAMMA_ETAIL)}: {GAMMA_ETAIL}\n" +
+                   $"{nameof(GAMMA_NN)}: {GAMMA_NN}\n" +
+                   $"{nameof(GAMMA_NN_SR)}: {GAMMA_NN_SR}\n" +
+                   $"{nameof(GAMMA_NS)}: {GAMMA_NS}\n" +
+                   $"{nameof(GAMMA_NS_SR)}: {GAMMA_NS_SR}\n" +
+                   $"{nameof(HPFONOFF)}: {HPFONOFF}\n" +
+                   $"{nameof(MIN_NN)}: {MIN_NN}\n" +
+                   $"{nameof(MIN_NN_SR)}: {MIN_NN_SR}\n" +
+                   $"{nameof(MIN_NS)}: {MIN_NS}\n" +
+                   $"{nameof(MIN_NS_SR)}: {MIN_NS_SR}\n" +
+                   $"{nameof(NLAEC_MODE)}: {NLAEC_MODE}\n" +
+                   $"{nameof(NLATTENONOFF)}: {NLATTENONOFF}\n" +
+                   $"{nameof(NONSTATNOISEONOFF)}: {NONSTATNOISEONOFF}\n" +
+                   $"{nameof(NONSTATNOISEONOFF_SR)}: {NONSTATNOISEONOFF_SR}\n" +
+                   $"{nameof(RT60)}: {RT60}\n" +
+                   $"{nameof(RT60ONOFF)}: {RT60ONOFF}\n" +
+                   $"{nameof(SPEECHDETECTED)}: {SPEECHDETECTED}\n" +
+                   $"{nameof(STATNOISEONOFF)}: {STATNOISEONOFF}\n" +
+                   $"{nameof(STATNOISEONOFF_SR)}: {STATNOISEONOFF_SR}\n" +
+                   $"{nameof(TRANSIENTONOFF)}: {TRANSIENTONOFF}\n" +
+                   $"{nameof(VOICEACTIVITY)}: {VOICEACTIVITY}\n";
+        }
+
+        public void Dispose()
+        {
+            _usbDevice?.Dispose();
         }
     }
 }
