@@ -32,10 +32,10 @@ namespace Respeaker.Net
 
             var devices = await DeviceManager.Current.GetDevicesAsync(deviceDefinitions);
 
-            var usbMicArrayV2Device = devices.FirstOrDefault() as LibUsbDevice;
+            var usbMicArrayV2Device = (LibUsbDevice)devices.First();
             await usbMicArrayV2Device.InitializeAsync();
 
-            var alsaSettings = new SoundConnectionSettings
+            var alsaSettings = new SoundDeviceSettings
             {
                 RecordingDeviceName = alsaDeviceName,
                 PlaybackDeviceName = alsaDeviceName,
