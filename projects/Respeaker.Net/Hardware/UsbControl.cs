@@ -1,20 +1,16 @@
-﻿using Device.Net.LibUsb;
+﻿using LibUsbDotNet;
 using LibUsbDotNet.Main;
 using Respeaker.Net.Exceptions;
 using System;
+using System.Linq;
 
 namespace Respeaker.Net.Hardware
 {
     static class UsbControl
     {
-        const byte CTRL_OUT = 0x00;
-        const byte CTRL_IN = 0x80;
-        const byte CTRL_TYPE_VENDOR = 2 << 5;
-        const byte CTRL_RECIPIENT_DEVICE = 0;
-
-        public static void WriteControlTransfer(int command, byte[] data, LibUsbDevice usbDevice)
+        public static void WriteControlTransfer(int command, byte[] data, IUsbDevice usbDevice)
         {
-            const byte request = CTRL_OUT | CTRL_TYPE_VENDOR | CTRL_RECIPIENT_DEVICE;
+            const byte request = (byte)(UsbCtrlFlags.Direction_Out | UsbCtrlFlags.RequestType_Vendor | UsbCtrlFlags.Recipient_Device);
 
             var setupPacket = new UsbSetupPacket(
                  request,
@@ -25,7 +21,7 @@ namespace Respeaker.Net.Hardware
 
             try
             {
-                usbDevice.UsbDevice.ControlTransfer(ref setupPacket, data, data.Length, out _);
+                usbDevice.ControlTransfer(ref setupPacket, data, data.Length, out _);
             }
             catch (Exception ex)
             {
@@ -33,27 +29,29 @@ namespace Respeaker.Net.Hardware
             }
         }
 
-        public static byte[] ReadControlTransfer(int command, int index, LibUsbDevice usbDevice)
+        public static byte[] ReadControlTransfer(int command, int index, int length, IUsbDevice usbDevice)
         {
-            // todo: das hier zum laufen bringen
-            const byte request = CTRL_IN | CTRL_TYPE_VENDOR | CTRL_RECIPIENT_DEVICE;
+            const byte request = (byte)(UsbCtrlFlags.Direction_In | UsbCtrlFlags.RequestType_Vendor | UsbCtrlFlags.Recipient_Device);
 
             var setupPacket = new UsbSetupPacket(
                 request,
                 0,
                 command,
                 index,
-                8);
+                length);
 
             try
             {
-                var buffer = new byte[8];
-                usbDevice.UsbDevice.ControlTransfer(ref setupPacket, buffer, buffer.Length, out _);
-                return buffer;
+                var buffer = new byte[length];
+
+                if (!usbDevice.ControlTransfer(ref setupPacket, buffer, buffer.Length, out var readed))
+                    throw new InvalidOperationException(ExceptionMessages.UnableToReadConfigParameter);
+
+                return buffer.Take(readed).ToArray();
             }
             catch (Exception ex)
             {
-                throw new UsbControlTransferFailedException(request, command, Array.Empty<byte>(), ex);
+                throw new UsbControlTransferFailedException(command, index, ex);
             }
         }
     }

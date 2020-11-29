@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Device.Net.LibUsb" Version="3.1.0" />
+    <PackageReference Include="LibUsbDotNet" Version="2.2.29" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\alsa.net\projects\Alsa.Net\Alsa.Net.csproj" >
+    <ProjectReference Include="..\..\..\alsa.net\projects\Alsa.Net\Alsa.Net.csproj">
       <PrivateAssets>True</PrivateAssets>
     </ProjectReference>
   </ItemGroup>

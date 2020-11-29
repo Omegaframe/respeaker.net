@@ -1,4 +1,4 @@
-﻿using Device.Net.LibUsb;
+﻿using LibUsbDotNet;
 using Respeaker.Net.Exceptions;
 using System;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace Respeaker.Net.Hardware
         public int AECFREEZEONOFF { get => Read<int>(18, 7, 1); set => Write(18, 7, 1, 1, 0, value, nameof(AECFREEZEONOFF)); }
         public float AECNORM { get => Read<float>(18, 19, 0); set => Write(18, 19, 0, 16, 0.25, value, nameof(AECNORM)); }
         public int AECPATHCHANGE => Read<int>(18, 25, 1);
-        public float AECSILENCELEVEL { get => Read<float>(18, 30, 1); set => Write(18, 30, 0, 1, 1e-09, value, nameof(AECSILENCELEVEL)); }
+        public float AECSILENCELEVEL { get => Read<float>(18, 30, 0); set => Write(18, 30, 0, 1, 1e-09, value, nameof(AECSILENCELEVEL)); }
         public int AECSILENCEMODE => Read<int>(18, 31, 1);
         public float AGCDESIREDLEVEL { get => Read<float>(19, 2, 0); set => Write(19, 2, 0, 0.99, 1e-08, value, nameof(AGCDESIREDLEVEL)); }
         public float AGCGAIN { get => Read<float>(19, 3, 0); set => Write(19, 3, 0, 1000, 1, value, nameof(AGCGAIN)); }
@@ -48,9 +48,9 @@ namespace Respeaker.Net.Hardware
         public int TRANSIENTONOFF { get => Read<int>(19, 29, 1); set => Write(19, 29, 1, 1, 0, value, nameof(TRANSIENTONOFF)); }
         public int VOICEACTIVITY => Read<int>(19, 32, 1);
 
-        readonly LibUsbDevice _usbDevice;
+        readonly IUsbDevice _usbDevice;
 
-        public OnBoardConfiguration(LibUsbDevice usbDevice)
+        public OnBoardConfiguration(IUsbDevice usbDevice)
         {
             _usbDevice = usbDevice;
         }
@@ -72,11 +72,13 @@ namespace Respeaker.Net.Hardware
 
         T Read<T>(int id, int offset, int type) where T : IComparable
         {
+            const int responseLength = 8;
+
             var cmd = 0x80 | offset;
             if (type == 1)
                 cmd |= 0x40;
 
-            var response = UsbControl.ReadControlTransfer(id, cmd, _usbDevice);
+            var response = UsbControl.ReadControlTransfer(cmd, id, responseLength, _usbDevice);
             var i1 = BitConverter.ToInt32(response.Take(4).ToArray(), 0);
             var i2 = BitConverter.ToInt32(response.Skip(4).ToArray(), 0);
 
@@ -135,7 +137,11 @@ namespace Respeaker.Net.Hardware
 
         public void Dispose()
         {
-            _usbDevice?.Dispose();
+            if (_usbDevice == null)
+                return;
+
+            if (_usbDevice.IsOpen)
+                _usbDevice.Close();
         }
     }
 }

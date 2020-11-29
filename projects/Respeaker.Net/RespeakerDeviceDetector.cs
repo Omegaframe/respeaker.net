@@ -1,39 +1,26 @@
 ﻿using Alsa.Net;
-using Device.Net;
-using Device.Net.LibUsb;
+using LibUsbDotNet;
+using LibUsbDotNet.Main;
+using Respeaker.Net.Exceptions;
 using Respeaker.Net.Hardware;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Respeaker.Net
 {
     public static class RespeakerDeviceDetector
     {
-        static RespeakerDeviceDetector()
-        {
-            LibUsbUsbDeviceFactory.Register(new DebugLogger(), new DebugTracer());
-        }
-
-        public static async Task<UsbMicArrayV2> GetUsbMicArrayV2()
+        public static UsbMicArrayV2 GetUsbMicArrayV2()
         {
             const string alsaDeviceName = "ArrayUAC10";
+            const int usbVendorId = 0x2886;
+            const int usbProductId = 0x0018;
 
-            var deviceDefinitions = new List<FilterDeviceDefinition>()
-            {
-                new FilterDeviceDefinition
-                {
-                    DeviceType = DeviceType.Usb,
-                    Label = "UsbMicArrayV2",
-                    VendorId = 0x2886,
-                    ProductId = 0x0018
-                }
-            };
+            var usbDeviceFinder = new UsbDeviceFinder(usbVendorId, usbProductId);
 
-            var devices = await DeviceManager.Current.GetDevicesAsync(deviceDefinitions);
+            if (!(UsbDevice.OpenUsbDevice(usbDeviceFinder) is IUsbDevice usbMicArrayV2Device))
+                throw new UsbDeviceNotFoundException(nameof(UsbMicArrayV2));
 
-            var usbMicArrayV2Device = (LibUsbDevice)devices.First();
-            //await usbMicArrayV2Device.InitializeAsync();
+            if (!usbMicArrayV2Device.IsOpen)
+                usbMicArrayV2Device.Open();
 
             var alsaSettings = new SoundDeviceSettings
             {

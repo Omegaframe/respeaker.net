@@ -10,7 +10,7 @@ namespace ExampleControl
     {
         static async Task Main()
         {
-            var respeakerDevice = await RespeakerDeviceDetector.GetUsbMicArrayV2();
+            var respeakerDevice = RespeakerDeviceDetector.GetUsbMicArrayV2();
 
             Console.WriteLine("------------------------------------");
             Console.WriteLine("Detecting current Parameters:");

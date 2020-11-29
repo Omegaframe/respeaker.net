@@ -1,5 +1,4 @@
-﻿using Device.Net;
-using Device.Net.LibUsb;
+﻿using LibUsbDotNet;
 using Respeaker.Net.Exceptions;
 using System;
 using System.Linq;
@@ -8,9 +7,9 @@ namespace Respeaker.Net.Hardware
 {
     public class PixelRing : IDisposable
     {
-        readonly LibUsbDevice _usbDevice;
+        readonly IUsbDevice _usbDevice;
 
-        internal PixelRing(LibUsbDevice usbDevice)
+        internal PixelRing(IUsbDevice usbDevice)
         {
             _usbDevice = usbDevice;
         }
@@ -159,7 +158,11 @@ namespace Respeaker.Net.Hardware
 
         public void Dispose()
         {
-            _usbDevice?.Dispose();
+            if (_usbDevice == null)
+                return;
+
+            if (_usbDevice.IsOpen)
+                _usbDevice.Close();
         }
 
         static byte[] HexColorToByteArray(int color)
