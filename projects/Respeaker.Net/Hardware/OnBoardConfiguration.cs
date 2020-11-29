@@ -86,7 +86,7 @@ namespace Respeaker.Net.Hardware
             if (type == 1)
                 result = (T)Convert.ChangeType(i1, typeof(T));
             else
-                result = (T)Convert.ChangeType((float)i1 * (2 ^ i2), typeof(T));
+                result = (T)Convert.ChangeType((float)i1 * (Math.Pow(2.0f, i2)), typeof(T));
 
             return result;
         }
