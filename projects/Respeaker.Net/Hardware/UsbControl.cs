@@ -21,7 +21,8 @@ namespace Respeaker.Net.Hardware
 
             try
             {
-                usbDevice.ControlTransfer(ref setupPacket, data, data.Length, out _);
+                if (!usbDevice.ControlTransfer(ref setupPacket, data, data.Length, out _))
+                    throw new InvalidOperationException(ExceptionMessages.UnableToWriteConfigParameter);
             }
             catch (Exception ex)
             {

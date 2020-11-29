@@ -35,7 +35,7 @@ namespace Respeaker.Net.Hardware
             if (color < minColor || color > maxColor)
                 throw new RespeakerArgumentOutOfRangeException($"The given color value is out of bounds: {color} Allowed Range: {minColor:X} - {maxColor:X}");
 
-            UsbControl.WriteControlTransfer(0, HexColorToByteArray(color), _usbDevice);
+            UsbControl.WriteControlTransfer(1, HexColorToByteArray(color), _usbDevice);
         }
 
         /// <summary>
