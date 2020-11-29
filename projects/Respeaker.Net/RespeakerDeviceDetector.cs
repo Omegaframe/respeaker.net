@@ -31,7 +31,7 @@ namespace Respeaker.Net
             };
             var alsaDevice = AlsaDeviceBuilder.Create(alsaSettings);
 
-            return new UsbMicArrayV2
+            return new UsbMicArrayV2(usbMicArrayV2Device, alsaDevice)
             {
                 LedRing = new PixelRing(usbMicArrayV2Device),
                 AudioInput = new AlsaAudioInput(alsaDevice),

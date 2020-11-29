@@ -1,16 +1,15 @@
 ﻿using Alsa.Net;
-using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Respeaker.Net.Hardware
 {
-    public class AlsaAudioOutput : IDisposable
+    public class AlsaAudioOutput
     {
         readonly ISoundDevice _soundDevice;
 
-        public AlsaAudioOutput(ISoundDevice soundDevice)
+        internal AlsaAudioOutput(ISoundDevice soundDevice)
         {
             _soundDevice = soundDevice;
         }
@@ -23,11 +22,6 @@ namespace Respeaker.Net.Hardware
         public Task Play(Stream stream, CancellationToken cancellationToken)
         {
             return Task.Factory.StartNew(() => _soundDevice.Play(stream), cancellationToken);
-        }
-
-        public void Dispose()
-        {
-            _soundDevice.Dispose();
         }
     }
 }

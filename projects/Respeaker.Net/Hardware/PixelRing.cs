@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Respeaker.Net.Hardware
 {
-    public class PixelRing : IDisposable
+    public class PixelRing
     {
         readonly IUsbDevice _usbDevice;
 
@@ -154,15 +154,6 @@ namespace Respeaker.Net.Hardware
                 throw new RespeakerArgumentOutOfRangeException($"The given volume value is out of bounds: {volume} Allowed Range: {minVolume} - {maxVolume}");
 
             UsbControl.WriteControlTransfer(0x23, new byte[] { (byte)volume }, _usbDevice);
-        }
-
-        public void Dispose()
-        {
-            if (_usbDevice == null)
-                return;
-
-            if (_usbDevice.IsOpen)
-                _usbDevice.Close();
         }
 
         static byte[] HexColorToByteArray(int color)
