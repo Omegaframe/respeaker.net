@@ -1,16 +1,13 @@
-﻿using System;
-using Alsa.Net;
+﻿using Alsa.Net;
 using LibUsbDotNet;
-using Respeaker.Net.Hardware;
-
-namespace Respeaker.Net
+namespace Respeaker.Net.Devices
 {
-    public class UsbMicArrayV2 : IDisposable
+    public class UsbMicArrayV2 : IRespeakerDevice
     {
-        public PixelRing LedRing { get; internal set; }
-        public AlsaAudioOutput AudioOutput { get; internal set; }
-        public AlsaAudioInput AudioInput { get; internal set; }
-        public OnBoardConfiguration Configuration { get; internal set; }
+        public ILedRing LedRing { get; internal set; }
+        public IAudioOutput AudioOutput { get; internal set; }
+        public IAudioInput AudioInput { get; internal set; }
+        public IOnBoardConfiguration Configuration { get; internal set; }
 
         readonly IUsbDevice _usbDevice;
         readonly ISoundDevice _soundDevice;

@@ -1,11 +1,10 @@
 ﻿using LibUsbDotNet;
 using Respeaker.Net.Exceptions;
-using System;
 using System.Linq;
 
 namespace Respeaker.Net.Hardware
 {
-    public class PixelRing
+    public class PixelRing : ILedRing
     {
         readonly IUsbDevice _usbDevice;
 
@@ -136,7 +135,7 @@ namespace Respeaker.Net.Hardware
         /// set center led state
         /// </summary>
         /// <param name="state">on, off or depend on VAD</param>
-        public void SetVadLed(VadLedState state)
+        public void SetVadLed(LedState state)
         {
             UsbControl.WriteControlTransfer(0x22, new byte[] { (byte)state }, _usbDevice);
         }
@@ -158,20 +157,13 @@ namespace Respeaker.Net.Hardware
 
         static byte[] HexColorToByteArray(int color)
         {
-            return new byte[] 
-            { 
-                (byte)((color >> 16) & 0xFF), 
-                (byte)((color >> 8) & 0xFF), 
-                (byte)(color & 0xFF), 
+            return new byte[]
+            {
+                (byte)((color >> 16) & 0xFF),
+                (byte)((color >> 8) & 0xFF),
+                (byte)(color & 0xFF),
                 0
             };
-        }        
-    }
-
-    public enum VadLedState
-    {
-        Off = 0,
-        On = 1,
-        DependOnVad = 2
+        }
     }
 }

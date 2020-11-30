@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Respeaker.Net.Hardware
 {
-    public class AlsaAudioOutput
+    public class AlsaAudioOutput : IAudioOutput
     {
         readonly ISoundDevice _soundDevice;
 
@@ -14,13 +14,15 @@ namespace Respeaker.Net.Hardware
             _soundDevice = soundDevice;
         }
 
-        public void Play(string file)
+        public Task Play(string file, CancellationToken cancellationToken)
         {
-            _soundDevice.Play(file);
+            // todo: token mitgeben
+            return Task.Factory.StartNew(() =>_soundDevice.Play(file), cancellationToken);
         }
 
         public Task Play(Stream stream, CancellationToken cancellationToken)
         {
+            // todo: token mitgeben
             return Task.Factory.StartNew(() => _soundDevice.Play(stream), cancellationToken);
         }
     }

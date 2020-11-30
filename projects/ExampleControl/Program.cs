@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Respeaker.Net;
@@ -10,7 +11,7 @@ namespace ExampleControl
     {
         static async Task Main()
         {
-            var respeakerDevice = RespeakerDeviceDetector.GetUsbMicArrayV2();
+            var respeakerDevice = RespeakerDeviceDetector.Detect().First();
 
             Console.WriteLine("------------------------------------");
             Console.WriteLine("Detecting current Parameters:");
