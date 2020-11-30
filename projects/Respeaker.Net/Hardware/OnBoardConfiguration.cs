@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Respeaker.Net.Hardware
 {
-    public class OnBoardConfiguration : IOnBoardConfiguration
+    class OnBoardConfiguration : IOnBoardConfiguration
     {
         /// <summary>
         /// Adaptive Echo Canceler updates inhibit.

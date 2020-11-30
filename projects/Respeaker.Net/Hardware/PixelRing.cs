@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Respeaker.Net.Hardware
 {
-    public class PixelRing : ILedRing
+    class PixelRing : ILedRing
     {
         readonly IUsbDevice _usbDevice;
 

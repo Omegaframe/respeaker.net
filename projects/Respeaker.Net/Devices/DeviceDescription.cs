@@ -1,4 +1,4 @@
-﻿namespace Respeaker.Net
+﻿namespace Respeaker.Net.Devices
 {
     public class DeviceDescription
     {
@@ -19,6 +19,8 @@
                 AlsaDeviceName = "ArrayUAC10"
             }
         };
+
+        public override string ToString() => $"{Name} - vId: {VendorId} pId: {ProductId} alsa: {AlsaDeviceName}";
     }
 
     public enum DeviceType

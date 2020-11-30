@@ -1,4 +1,5 @@
 ﻿using System;
+using Respeaker.Net.Devices;
 
 namespace Respeaker.Net
 {
@@ -8,5 +9,6 @@ namespace Respeaker.Net
         IAudioOutput AudioOutput { get; }
         IAudioInput AudioInput { get; }
         IOnBoardConfiguration Configuration { get; }
+        DeviceDescription Description { get; }
     }
 }

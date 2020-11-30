@@ -44,12 +44,13 @@ namespace Respeaker.Net
                 RecordingDeviceName = deviceDescription.AlsaDeviceName,
                 PlaybackDeviceName = deviceDescription.AlsaDeviceName,
                 RecordingBitsPerSample = 16,
-                RecordingSampleRate = 441000
+                RecordingSampleRate = 16000
             };
             var alsaDevice = AlsaDeviceBuilder.Create(alsaSettings);
 
             return new UsbMicArrayV2(usbMicArrayV2Device, alsaDevice)
             {
+                Description = deviceDescription,
                 LedRing = new PixelRing(usbMicArrayV2Device),
                 AudioInput = new AlsaAudioInput(alsaDevice),
                 AudioOutput = new AlsaAudioOutput(alsaDevice),

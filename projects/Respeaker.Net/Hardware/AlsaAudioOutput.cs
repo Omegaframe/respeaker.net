@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Respeaker.Net.Hardware
 {
-    public class AlsaAudioOutput : IAudioOutput
+    class AlsaAudioOutput : IAudioOutput
     {
         readonly ISoundDevice _soundDevice;
 

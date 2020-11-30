@@ -12,6 +12,7 @@ namespace ExampleControl
         static async Task Main()
         {
             var respeakerDevice = RespeakerDeviceDetector.Detect().First();
+            Console.WriteLine($"Found device: {respeakerDevice.Description}");
 
             Console.WriteLine("------------------------------------");
             Console.WriteLine("Detecting current Parameters:");
