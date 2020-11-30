@@ -44,7 +44,8 @@ namespace Respeaker.Net
                 RecordingDeviceName = deviceDescription.AlsaDeviceName,
                 PlaybackDeviceName = deviceDescription.AlsaDeviceName,
                 RecordingBitsPerSample = 16,
-                RecordingSampleRate = 16000
+                RecordingSampleRate = 16000,
+                RecordingChannels = 1
             };
             var alsaDevice = AlsaDeviceBuilder.Create(alsaSettings);
 
