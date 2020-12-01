@@ -11,6 +11,9 @@ namespace Respeaker.Net
 {
     public static class RespeakerDeviceDetector
     {
+        // since there is no volume control per default someone might want to create a virtual device capabale of this and use that one (i do!)
+        public static string AudioOutputOverrideDevice { get; set; }
+
         public static IEnumerable<IRespeakerDevice> Detect()
         {
             var knownDevices = DeviceDescription.Known;
@@ -42,7 +45,7 @@ namespace Respeaker.Net
             var alsaSettings = new SoundDeviceSettings
             {
                 RecordingDeviceName = deviceDescription.AlsaDeviceName,
-                PlaybackDeviceName = deviceDescription.AlsaDeviceName,
+                PlaybackDeviceName = string.IsNullOrWhiteSpace(AudioOutputOverrideDevice) ? deviceDescription.AlsaDeviceName : AudioOutputOverrideDevice,
                 RecordingBitsPerSample = 16,
                 RecordingSampleRate = 16000,
                 RecordingChannels = 1

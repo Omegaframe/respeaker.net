@@ -8,5 +8,7 @@ namespace Respeaker.Net
     {
         Task Play(string file, CancellationToken cancellationToken);
         Task Play(Stream stream, CancellationToken cancellationToken);
+
+        void SetVolume(ushort volume);
     }
 }

@@ -25,5 +25,10 @@ namespace Respeaker.Net.Hardware
             // todo: token mitgeben
             return Task.Factory.StartNew(() => _soundDevice.Play(stream), cancellationToken);
         }
+
+        public void SetVolume(ushort volume)
+        {
+            _soundDevice.PlaybackVolume = volume;
+        }
     }
 }
