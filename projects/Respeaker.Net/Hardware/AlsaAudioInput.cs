@@ -1,4 +1,5 @@
 ﻿using Alsa.Net;
+using Respeaker.Net.Extensions;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Respeaker.Net.Hardware
 
         public Task Record(Stream outputStream, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => _soundDevice.Record(outputStream, cancellationToken), cancellationToken);
+            return Task.Factory.StartNew(() => _soundDevice.Record(outputStream, cancellationToken), cancellationToken).AllowCancellation();
         }
     }
 }

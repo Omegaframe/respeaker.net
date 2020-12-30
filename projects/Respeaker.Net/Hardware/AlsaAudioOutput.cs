@@ -1,4 +1,5 @@
 ﻿using Alsa.Net;
+using Respeaker.Net.Extensions;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,15 +16,13 @@ namespace Respeaker.Net.Hardware
         }
 
         public Task Play(string file, CancellationToken cancellationToken)
-        {
-            // todo: token mitgeben
-            return Task.Factory.StartNew(() =>_soundDevice.Play(file), cancellationToken);
+        {            
+            return Task.Factory.StartNew(() =>_soundDevice.Play(file, cancellationToken), cancellationToken).AllowCancellation();
         }
 
         public Task Play(Stream stream, CancellationToken cancellationToken)
-        {
-            // todo: token mitgeben
-            return Task.Factory.StartNew(() => _soundDevice.Play(stream), cancellationToken);
+        {            
+            return Task.Factory.StartNew(() => _soundDevice.Play(stream, cancellationToken), cancellationToken).AllowCancellation();
         }
 
         public void SetVolume(ushort volume)

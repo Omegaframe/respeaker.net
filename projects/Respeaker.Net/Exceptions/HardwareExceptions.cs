@@ -2,6 +2,11 @@
 
 namespace Respeaker.Net.Exceptions
 {
+    public class UnknownDeviceException : Exception
+    {
+        public UnknownDeviceException(string deviceType) : base(ExceptionMessages.UnknownDevice.Replace("{NAME}", deviceType)) { }
+    }
+
     public class UsbDeviceNotFoundException : Exception
     {
         readonly string _message;

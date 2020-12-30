@@ -11,7 +11,7 @@ namespace Respeaker.Net
 {
     public static class RespeakerDeviceDetector
     {
-        // since there is no volume control per default someone might want to create a virtual device capabale of this and use that one (i do!)
+        // since there is no volume control per default, someone might want to create a virtual device capabale of this and use that one (i do!)
         public static string AudioOutputOverrideDevice { get; set; }
 
         public static IEnumerable<IRespeakerDevice> Detect()
@@ -27,7 +27,7 @@ namespace Respeaker.Net
                 yield return respeakerUsb.DeviceType switch
                 {
                     DeviceType.UsbMicArrayV2 => GetUsbMicArrayV2(respeakerUsb),
-                    _ => throw new System.Exception()
+                    _ => throw new UnknownDeviceException(respeakerUsb.DeviceType.ToString())
                 };
             }
         }
