@@ -8,7 +8,7 @@
         public string Name { get; set; }
         public DeviceType DeviceType { get; set; }
 
-        public static DeviceDescription[] Known => new[]
+        internal static DeviceDescription[] Known => new[]
         {
             new DeviceDescription
             {
