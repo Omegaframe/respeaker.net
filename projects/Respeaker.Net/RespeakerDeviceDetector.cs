@@ -48,8 +48,7 @@ namespace Respeaker.Net
                 PlaybackDeviceName = string.IsNullOrWhiteSpace(AudioOutputOverrideDevice) ? deviceDescription.AlsaDeviceName : AudioOutputOverrideDevice,
                 RecordingBitsPerSample = 16,
                 RecordingSampleRate = 16000,
-                RecordingChannels = 1,
-                FlushBuffers = true
+                RecordingChannels = 1
             };
             var alsaDevice = AlsaDeviceBuilder.Create(alsaSettings);
 
