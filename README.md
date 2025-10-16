@@ -7,7 +7,7 @@ Uses the [Alsa.Net](https://github.com/Omegaframe/alsa.net) package for audio de
 ## First Steps
 1. Use the detector to obtain a handle on your device
 ```
- var respeakerDevice = RespeakerDeviceDetector.Detect().First();
+ using var respeakerDevice = RespeakerDeviceDetector.Detect().First();
 ```
 
 2. Read and output device settings
