@@ -1,59 +1,61 @@
-﻿using LibUsbDotNet;
+﻿using System.Buffers;
+using LibUsbDotNet;
 using LibUsbDotNet.Main;
 using Respeaker.Net.Exceptions;
-using System;
-using System.Linq;
 
-namespace Respeaker.Net.Hardware
+namespace Respeaker.Net.Hardware;
+
+static class UsbControl
 {
-    static class UsbControl
+    public static void WriteControlTransfer(int command, byte[] data, IUsbDevice usbDevice)
     {
-        public static void WriteControlTransfer(int command, byte[] data, IUsbDevice usbDevice)
+        const byte request = (byte)(UsbCtrlFlags.Direction_Out | UsbCtrlFlags.RequestType_Vendor | UsbCtrlFlags.Recipient_Device);
+
+        var setupPacket = new UsbSetupPacket(
+            request,
+            0,
+            command,
+            0x1C,
+            data.Length);
+
+        try
         {
-            const byte request = (byte)(UsbCtrlFlags.Direction_Out | UsbCtrlFlags.RequestType_Vendor | UsbCtrlFlags.Recipient_Device);
-
-            var setupPacket = new UsbSetupPacket(
-                 request,
-                 0,
-                 command,
-                 0x1C,
-                 data.Length);
-
-            try
-            {
-                if (!usbDevice.ControlTransfer(ref setupPacket, data, data.Length, out _))
-                    throw new InvalidOperationException(ExceptionMessages.UnableToWriteConfigParameter);
-            }
-            catch (Exception ex)
-            {
-                throw new UsbControlTransferFailedException(request, command, data, ex);
-            }
+            if (!usbDevice.ControlTransfer(ref setupPacket, data, data.Length, out _))
+                throw new InvalidOperationException(ExceptionMessages.UnableToWriteConfigParameter);
         }
-
-        public static byte[] ReadControlTransfer(int command, int index, int length, IUsbDevice usbDevice)
+        catch (Exception ex)
         {
-            const byte request = (byte)(UsbCtrlFlags.Direction_In | UsbCtrlFlags.RequestType_Vendor | UsbCtrlFlags.Recipient_Device);
+            throw new UsbControlTransferFailedException(request, command, data, ex);
+        }
+    }
 
-            var setupPacket = new UsbSetupPacket(
-                request,
-                0,
-                command,
-                index,
-                length);
+    public static byte[] ReadControlTransfer(int command, int index, int length, IUsbDevice usbDevice)
+    {
+        const byte request = (byte)(UsbCtrlFlags.Direction_In | UsbCtrlFlags.RequestType_Vendor | UsbCtrlFlags.Recipient_Device);
 
-            try
-            {
-                var buffer = new byte[length];
+        var setupPacket = new UsbSetupPacket(
+            request,
+            0,
+            command,
+            index,
+            length);
 
-                if (!usbDevice.ControlTransfer(ref setupPacket, buffer, buffer.Length, out var readed))
-                    throw new InvalidOperationException(ExceptionMessages.UnableToReadConfigParameter);
+        var buffer = ArrayPool<byte>.Shared.Rent(length);
 
-                return buffer.Take(readed).ToArray();
-            }
-            catch (Exception ex)
-            {
-                throw new UsbControlTransferFailedException(command, index, ex);
-            }
+        try
+        {
+            if (!usbDevice.ControlTransfer(ref setupPacket, buffer, buffer.Length, out var readed))
+                throw new InvalidOperationException(ExceptionMessages.UnableToReadConfigParameter);
+
+            return buffer[..readed];
+        }
+        catch (Exception ex)
+        {
+            throw new UsbControlTransferFailedException(command, index, ex);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
         }
     }
 }
