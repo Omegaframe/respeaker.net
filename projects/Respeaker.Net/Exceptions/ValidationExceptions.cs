@@ -1,9 +1,8 @@
-﻿using System;
+﻿namespace Respeaker.Net.Exceptions;
 
-namespace Respeaker.Net.Exceptions
+/// <summary>thrown if a respeaker parameter is out of the allowed range</summary>
+public class RespeakerArgumentOutOfRangeException : ArgumentOutOfRangeException
 {
-    public class RespeakerArgumentOutOfRangeException : ArgumentOutOfRangeException
-    {
-        public RespeakerArgumentOutOfRangeException(string message) : base(message) { }
-    }
+    /// <inheritdoc cref="RespeakerArgumentOutOfRangeException"/>
+    public RespeakerArgumentOutOfRangeException(string message) : base(message) { }
 }
